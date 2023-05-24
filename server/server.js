@@ -24,16 +24,15 @@ if (process.env.NODE_ENV === "production") {
 };
 
 // create a new instance of Apollo Server using GraphQL schema
-const startApolloServer = async (typeDefs, resolvers) => {
+const startApolloServer = async () => {
   await server.start();
+
   server.applyMiddleware({ app });
 
-  db.once("open", () => {
-    app.listen(PORT, () => {
-      console.log(`Server now running on port ${PORT}!`);
-      console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`)
-    });
-  });
+  await new Promise(resolve => app.listen({ port: PORT }, resolve));
+
+  console.log(`Server now running on port ${PORT}!`);
+  console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
 };
 
 // start server
